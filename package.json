@@ -1,6 +1,6 @@
 {
   "name": "obstinate",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Simple global object persistance with Node.js",
   "main": "index.js",
   "scripts": {

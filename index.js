@@ -2,16 +2,20 @@
 var fs = require('fs'),
     crypto = require('crypto');
 
-function Obstinate(sReferenceName, oReferenceObject, oArguments) {
+module.exports = function (sReferenceName, oReferenceObject, oArguments) {
 
     var oParameters = {
         name : sReferenceName,
         delay : 50,
-        filepath : __dirname + '/data/'
+        filepath : 'globals/'
     };
 
     defaultArguments(oParameters, oArguments);
     readJSON(oParameters.filepath, oParameters.name, oReferenceObject);
+
+    if (!fs.existsSync(oParameters.filepath)) {
+        fs.mkdirSync(oParameters.filepath);
+    }
 
     var oProperties = {
         name : { value : oParameters.name },
@@ -53,15 +57,15 @@ function Obstinate(sReferenceName, oReferenceObject, oArguments) {
         start : function () {
             this.interval = setInterval(this.check.bind(this), this.delay);
         },
-        stop : function () {
+        stop : function (bSave) {
+            if (typeof bSave === 'undefined') { bSave = false; }
             clearInterval(this.interval);
+            if (bSave) { this.save(); }
         }
     };
 
     return Object.create(oPrototype, oProperties);
 }
-
-module.exports = Obstinate;
 
 function readJSON(sFilepath, sReferenceName, oReferenceObject) {
     var aFiles = fs.readdirSync(sFilepath); 
@@ -90,7 +94,3 @@ function defaultArguments(oDefault, oArguments) {
         }
     }
 }
-
-
-
-
